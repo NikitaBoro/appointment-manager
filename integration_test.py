@@ -10,7 +10,6 @@ from backend.main import app
 from backend.data import appointments,current_id,db
 import backend.auth as auth
 
-
 client = TestClient(app)
 
 @pytest.fixture(autouse=True)

@@ -4,8 +4,6 @@ from main import app
 from data import appointments,current_id,db
 import auth as auth
 
-
-
 client = TestClient(app)
 
 # Reset data between tests
