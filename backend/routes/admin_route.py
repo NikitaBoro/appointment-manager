@@ -11,7 +11,7 @@ router = APIRouter()
 def read_all_users(current_user:models.User = Depends(auth.get_current_active_admin)):
     return [models.User(**user_data) for user_data in db.values()] 
 
-#A dmin delete user
+# Admin delete user
 @router.delete("/users/{phone}", response_model=models.User)
 def delete_user(phone: str, current_user: models.UserInDB = Depends(auth.get_current_active_admin)):
     if phone in db:

@@ -29,7 +29,7 @@ def get_appointments(current_user: models.UserInDB = Depends(auth.get_current_ac
         raise HTTPException(status_code=404, detail="Appointments not found")
     return user_appointments
 
-#update appointment by id
+# Update appointment by id
 @router.put("/appointments/{id}", response_model=models.Appointment)
 def update_appointment(id: int, updated_appointment: models.Appointment, current_user: models.UserInDB = Depends(auth.get_current_active_user)):
     for a in appointments:
@@ -44,7 +44,7 @@ def update_appointment(id: int, updated_appointment: models.Appointment, current
                 raise HTTPException(status_code=403, detail="Not authorized to update this appointment")
     raise HTTPException(status_code=404, detail="Can't update, appointment not found")
 
-#delete appointment by id
+# Delete appointment by id
 @router.delete("/appointments/{id}", response_model=models.Appointment)
 def delete_appointment(id: int, current_user: models.UserInDB = Depends(auth.get_current_active_user)):
     for a in appointments:
