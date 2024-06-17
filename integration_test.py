@@ -11,7 +11,6 @@ from backend.data import appointments,current_id,db
 import backend.auth as auth
 
 
-
 client = TestClient(app)
 
 @pytest.fixture(autouse=True)
@@ -32,8 +31,11 @@ def setup_and_teardown():
     })
     yield
 
-# Helper functions
-def register_user(phone: str, full_name: str, email: str, password: str, role: str = "user"):
+
+#Helper functions---------------------------------------------------------------------------------------
+
+# Helper function to register a user
+def register_user(phone: str = "1234567890", full_name: str="Test User", email: str="test@example.com", password: str = "password123", role: str = "user"):
     response = client.post("/v1/register", json={
         "phone": phone,
         "full_name": full_name,
@@ -42,30 +44,38 @@ def register_user(phone: str, full_name: str, email: str, password: str, role: s
     }, params={"password": password})
     return response
 
+# Helper function to login and get token
 def login_user(phone: str, password: str):
     response = client.post("/v1/token", data={"username": phone, "password": password})
     token = response.json()["access_token"]
     return {"Authorization": f"Bearer {token}"}
 
-def create_appointment(token_headers: dict, appointment_data: dict):
-    response = client.post("/v1/appointments", json=appointment_data, headers=token_headers)
-    return response
-
-
-# Integration tests
-def test_user_workflow():
-    response = register_user(phone="1234567890", full_name="Test User", email="test@example.com", password="password123", role="user")
-    assert response.status_code == 200
-
-    headers = login_user("1234567890", "password123")
-    response = create_appointment(headers, {
+# Helper function to create an appointment
+def create_appointment(token_headers: dict, appointment_data: dict = {
         "id": current_id,
         "name": "Test User",
         "phone": "1234567890",
         "date": "17-10-2024",
         "time": "10:00",
         "service": "Manicure"
-    })
+    }):
+    response = client.post("/v1/appointments", json=appointment_data, headers=token_headers)
+    return response
+
+
+#Tests -----------------------------------------------------------------------------------------------------
+
+# Integration tests
+def test_user_workflow():
+    #Register user
+    response = register_user()
+    assert response.status_code == 200
+
+    #Login user
+    headers = login_user("1234567890", "password123")
+
+    #Create appointment
+    response = create_appointment(headers)
     assert response.status_code == 200
 
     response = client.get("/v1/appointments", headers=headers)
@@ -77,6 +87,7 @@ def test_user_workflow():
     assert data[0]["date"] == "17-10-2024"
     assert data[0]["time"] == "10:00"
     assert data[0]["service"] == "Manicure"
+
 
 def test_admin_workflow():
     # Register users
@@ -90,10 +101,6 @@ def test_admin_workflow():
     response = client.get("/v1/admin/users", headers=admin_headers)
     assert response.status_code == 200
     data = response.json()
-    
-    # Debugging output
-    print("User Data:", data)
-    
     assert len(data) == 4
 
     # Delete a user
