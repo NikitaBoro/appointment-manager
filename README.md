@@ -57,7 +57,7 @@ pytest integration_test.py
 
 Once the containers are running, you can access the backend in your web browser at http://localhost:8000/docs
 
-## Illustration:
+## Illustration
 
 ![image](https://github.com/EASS-HIT-PART-A-2024-CLASS-V/appointment-manager/assets/133001359/4b48f406-90bd-441d-9dce-4ee25791d5c6)
 
