@@ -1,10 +1,11 @@
 import pytest
 from fastapi.testclient import TestClient
 from main import app
-from data import appointments,current_id,db
+from data import appointments, current_id, db
 import auth as auth
 
 client = TestClient(app)
+
 
 # Reset data between tests
 @pytest.fixture(autouse=True)
@@ -13,29 +14,41 @@ def setup_and_teardown():
     current_id = 1
     appointments.clear()
     db.clear()
-    db.update({
-        "admin": {
-            "phone": "admin",
-            "full_name": "admin admin",
-            "email": "admin@email.com",
-            "hashed_password": auth.pwd_context.hash("admin"),  # The password is admin
-            "disabled": False,
-            "role": "admin"
+    db.update(
+        {
+            "admin": {
+                "phone": "admin",
+                "full_name": "admin admin",
+                "email": "admin@email.com",
+                "hashed_password": auth.pwd_context.hash(
+                    "admin"
+                ),  # The password is admin
+                "disabled": False,
+                "role": "admin",
+            }
         }
-    })
+    )
     yield
 
-#Helper functions---------------------------------------------------------------------------------------
+
+# Helper functions---------------------------------------------------------------------------------------
+
 
 # Helper function to register a user
-def register_user(phone: str = "1234567890", full_name: str="Test User", email: str="test@example.com", password: str = "password123", role: str = "user"):
-    response = client.post("/v1/register", json={
-        "phone": phone,
-        "full_name": full_name,
-        "email": email,
-        "role": role
-    }, params={"password": password})
+def register_user(
+    phone: str = "1234567890",
+    full_name: str = "Test User",
+    email: str = "test@example.com",
+    password: str = "password123",
+    role: str = "user",
+):
+    response = client.post(
+        "/v1/register",
+        json={"phone": phone, "full_name": full_name, "email": email, "role": role},
+        params={"password": password},
+    )
     return response
+
 
 # Helper function to login and get token
 def login_user(phone: str, password: str):
@@ -43,20 +56,27 @@ def login_user(phone: str, password: str):
     token = response.json()["access_token"]
     return {"Authorization": f"Bearer {token}"}
 
+
 # Helper function to create an appointment
-def create_appointment(token_headers: dict, appointment_data: dict = {
+def create_appointment(
+    token_headers: dict,
+    appointment_data: dict = {
         "id": current_id,
         "name": "Test User",
         "phone": "1234567890",
         "date": "17-10-2024",
         "time": "10:00",
-        "service": "Manicure"
-    }):
-    response = client.post("/v1/appointments", json=appointment_data, headers=token_headers)
+        "service": "Manicure",
+    },
+):
+    response = client.post(
+        "/v1/appointments", json=appointment_data, headers=token_headers
+    )
     return response
 
 
 # User Tests -----------------------------------------------------------------------------------------------------
+
 
 # Test registration
 def test_register_user():
@@ -72,7 +92,9 @@ def test_register_user():
 # Test login for access token
 def test_login_for_access_token():
     register_user()
-    response = client.post("/v1/token", data={"username": "1234567890", "password": "password123"})
+    response = client.post(
+        "/v1/token", data={"username": "1234567890", "password": "password123"}
+    )
     assert response.status_code == 200
     data = response.json()
     assert "access_token" in data
@@ -81,7 +103,7 @@ def test_login_for_access_token():
 
 # Test get current user info
 def test_read_users_me():
-    #Register and login user:
+    # Register and login user:
     register_user()
     headers = login_user("1234567890", "password123")
 
@@ -94,11 +116,11 @@ def test_read_users_me():
 
 # Test create appointment
 def test_create_appointment():
-    #Register and login user:
+    # Register and login user:
     register_user()
     headers = login_user("1234567890", "password123")
 
-    #Create an appointmnet:
+    # Create an appointmnet:
     response = create_appointment(headers)
 
     assert response.status_code == 200
@@ -112,11 +134,11 @@ def test_create_appointment():
 
 # Test get appointments
 def test_get_appointments():
-    #Register and login user:
+    # Register and login user:
     register_user()
     headers = login_user("1234567890", "password123")
 
-    #Create an appointmnet: 
+    # Create an appointmnet:
     create_appointment(headers)
 
     response = client.get("/v1/appointments", headers=headers)
@@ -132,24 +154,28 @@ def test_get_appointments():
 
 # Test to update appointment
 def test_update_appointment():
-    #Register and login user::
+    # Register and login user::
     register_user()
     headers = login_user("1234567890", "password123")
 
-    #Create an appointmnet: 
+    # Create an appointmnet:
     create_response = create_appointment(headers)
     assert create_response.status_code == 200
     appointment_id = create_response.json()["id"]
 
-    #Update appointment
-    update_response = client.put(f"/v1/appointments/{appointment_id}", json={
-        "id": appointment_id,
-        "name": "Test User",
-        "phone": "1234567890",
-        "date": "18-10-2024",
-        "time": "11:00",
-        "service": "Pedicure"
-    }, headers=headers)
+    # Update appointment
+    update_response = client.put(
+        f"/v1/appointments/{appointment_id}",
+        json={
+            "id": appointment_id,
+            "name": "Test User",
+            "phone": "1234567890",
+            "date": "18-10-2024",
+            "time": "11:00",
+            "service": "Pedicure",
+        },
+        headers=headers,
+    )
     assert update_response.status_code == 200
     data = update_response.json()
     assert data["name"] == "Test User"
@@ -171,7 +197,9 @@ def test_delete_appointment():
     appointment_id = create_data["id"]
 
     # Delete the appointment:
-    delete_response = client.delete(f"/v1/appointments/{appointment_id}", headers=headers)
+    delete_response = client.delete(
+        f"/v1/appointments/{appointment_id}", headers=headers
+    )
     assert delete_response.status_code == 200
     delete_data = delete_response.json()
     assert delete_data["id"] == appointment_id
@@ -181,7 +209,8 @@ def test_delete_appointment():
     assert get_response.status_code == 404
 
 
-#Admin Tests -------------------------------------------------------------------------------------------------
+# Admin Tests -------------------------------------------------------------------------------------------------
+
 
 # Test admin login
 def test_admin_login():
@@ -194,8 +223,20 @@ def test_admin_login():
 
 # Test admin get all users
 def test_admin_get_all_users():
-    register_user(phone="1111111111", full_name="Test User", email="test@example.com", password="password123", role="user")
-    register_user(phone="2222222222", full_name="Test User2", email="test2@example.com", password="password123", role="user")
+    register_user(
+        phone="1111111111",
+        full_name="Test User",
+        email="test@example.com",
+        password="password123",
+        role="user",
+    )
+    register_user(
+        phone="2222222222",
+        full_name="Test User2",
+        email="test2@example.com",
+        password="password123",
+        role="user",
+    )
     # Login as admin
     admin_headers = login_user("admin", "admin")
     response = client.get("/v1/admin/users", headers=admin_headers)
@@ -218,7 +259,7 @@ def test_admin_delete_user():
 
     # Verify user is deleted
     user_response = client.delete("/v1/admin/users/1234567890", headers=admin_headers)
-    assert user_response.status_code == 404 
+    assert user_response.status_code == 404
 
 
 # Test admin get all appointments
@@ -231,14 +272,17 @@ def test_admin_get_appointments():
     create_appointment(user_headers)
 
     # Create the second appointment
-    create_appointment(user_headers, {
-        "id": current_id + 1,
-        "name": "Test User",
-        "phone": "1234567890",
-        "date": "18-10-2024",
-        "time": "11:00",
-        "service": "Pedicure"
-    })
+    create_appointment(
+        user_headers,
+        {
+            "id": current_id + 1,
+            "name": "Test User",
+            "phone": "1234567890",
+            "date": "18-10-2024",
+            "time": "11:00",
+            "service": "Pedicure",
+        },
+    )
 
     # Login as admin
     admin_headers = login_user("admin", "admin")
@@ -247,7 +291,7 @@ def test_admin_get_appointments():
     response = client.get("/v1/admin/appointments/all", headers=admin_headers)
     assert response.status_code == 200
     data = response.json()
-    assert len(data) == 2 
+    assert len(data) == 2
 
 
 # Test admin get appointments by phone
@@ -255,13 +299,15 @@ def test_admin_get_appointments_by_phone():
     # Register and login user to create appointments
     register_user()
     user_headers = login_user("1234567890", "password123")
-    
+
     # Create the first appointment
     create_appointment(user_headers)
 
     # Login as admin
     admin_headers = login_user("admin", "admin")
-    response = client.get("/v1/admin/appointments/phone/1234567890", headers=admin_headers)
+    response = client.get(
+        "/v1/admin/appointments/phone/1234567890", headers=admin_headers
+    )
     assert response.status_code == 200
     data = response.json()
     assert len(data) == 1
@@ -273,7 +319,7 @@ def test_admin_get_appointments_by_month():
     # Register and login user to create appointments
     register_user()
     user_headers = login_user("1234567890", "password123")
-    
+
     # Create the first appointment
     create_appointment(user_headers)
 
@@ -283,5 +329,3 @@ def test_admin_get_appointments_by_month():
     data = response.json()
     assert len(data) == 1
     assert data[0]["date"].split("-")[1] == "10"
-
-

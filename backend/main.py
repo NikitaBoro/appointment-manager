@@ -8,8 +8,3 @@ app = FastAPI()
 app.include_router(user_router, prefix="/v1", tags=["user"])
 app.include_router(appointments_router, prefix="/v1", tags=["appointments"])
 app.include_router(admin_router, prefix="/v1/admin", tags=["admin"])
-
-
-
-
-

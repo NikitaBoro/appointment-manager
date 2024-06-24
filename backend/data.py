@@ -8,6 +8,6 @@ db = {
         "email": "admin@email.com",
         "hashed_password": "$2b$12$fhADMwigzjfkEja34vtCJ.2yrdMXUoXMoHCXNr6gmSMWUfEHjBuI2",  # The password is admin
         "disabled": False,
-        "role": "admin"
+        "role": "admin",
     }
 }

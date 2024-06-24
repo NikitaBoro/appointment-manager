@@ -1,14 +1,16 @@
-from pydantic import BaseModel , field_validator
+from pydantic import BaseModel, field_validator
 from datetime import datetime
 from typing import List, Optional
 
 
 class Token(BaseModel):
-    access_token : str
+    access_token: str
     token_type: str
+
 
 class TokenData(BaseModel):
     phone: Optional[str] = None
+
 
 class User(BaseModel):
     phone: str
@@ -17,20 +19,18 @@ class User(BaseModel):
     disabled: Optional[bool] = False
     role: str
 
+
 class UserInDB(User):
     hashed_password: str
 
 
-
-
 class Appointment(BaseModel):
-    id:int
+    id: int
     name: str
     phone: str
-    date: str # dd-mm-yyyy format
-    time: str # hh:mm format
+    date: str  # dd-mm-yyyy format
+    time: str  # hh:mm format
     service: str
-
 
     @field_validator("date")
     def check_date(cls, value):
@@ -39,17 +39,15 @@ class Appointment(BaseModel):
             raise ValueError("Invalid date")
         return value
 
-    @field_validator('time')
+    @field_validator("time")
     def check_time(cls, value):
         try:
             datetime.strptime(value, "%H:%M")
         except ValueError:
-            raise ValueError('Invalid time: Time must be in the format HH:MM.')
+            raise ValueError("Invalid time: Time must be in the format HH:MM.")
         return value
 
 
-def combine_date_time(date:str,time:str) -> datetime:
+def combine_date_time(date: str, time: str) -> datetime:
     date_time = f"{date} {time}"
     return datetime.strptime(date_time, "%d-%m-%Y %H:%M")
-
-
