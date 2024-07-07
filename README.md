@@ -50,8 +50,8 @@ pytest integration_test.py
 
 ## Access
 
-Once the containers are running, you can access the frontend in your browser at http://localhost:8501/
-and the backend at http://localhost:8000/docs
+- Access the frontend at http://localhost:8501/
+- Access the backend at http://localhost:8000/docs
 
 ## Illustration
 
@@ -59,7 +59,7 @@ and the backend at http://localhost:8000/docs
 
 ## Built with
 
-**Backend** - Python, FastAPI
-**Frontend** - Streamlit
+- **Backend** - Python, FastAPI 
+- **Frontend** - Streamlit
 
 
