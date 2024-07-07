@@ -55,7 +55,8 @@ pytest integration_test.py
 
 ## Illustration
 
-![image](https://github.com/EASS-HIT-PART-A-2024-CLASS-V/appointment-manager/assets/133001359/4b48f406-90bd-441d-9dce-4ee25791d5c6)
+![image](https://github.com/EASS-HIT-PART-A-2024-CLASS-V/appointment-manager/assets/133001359/b3e752a2-6515-4f55-8697-d98056c0af50)
+
 
 ## Built with
 
