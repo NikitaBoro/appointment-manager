@@ -3,6 +3,7 @@ from typing import List
 import models
 import auth
 from data import appointments, db
+from datetime import datetime
 
 router = APIRouter()
 
@@ -30,16 +31,6 @@ def delete_user(
     raise HTTPException(status_code=404, detail="User not found")
 
 
-# Admin get all appointments
-@router.get("/appointments/all", response_model=List[models.Appointment])
-def get_all_appointments(
-    current_user: models.UserInDB = Depends(auth.get_current_active_admin),
-):
-    if not appointments:
-        raise HTTPException(status_code=404, detail="Appointments not found")
-    return appointments
-
-
 # Get all appointments for a phone number
 @router.get("/appointments/phone/{phone}", response_model=List[models.Appointment])
 def get_appointments_by_phone(
@@ -53,23 +44,25 @@ def get_appointments_by_phone(
         raise HTTPException(
             status_code=404, detail="Appointments not found for this phone number"
         )
+    appointments_list.sort(key=lambda x: (datetime.strptime(x['date'], "%d-%m-%Y"), datetime.strptime(x['time'], "%H:%M")))
     return appointments_list
 
 
-# Get all appointments in a specific month
-@router.get("/appointments/month/{month}", response_model=List[models.Appointment])
-def get_appointments_by_month(
-    month: int, current_user: models.UserInDB = Depends(auth.get_current_active_admin)
+# Get all appointments in a specific month and year
+@router.get("/appointments/month/{month}/year/{year}", response_model=List[models.Appointment])
+def get_appointments_by_month_and_year(
+    month: int, year: int, current_user: models.UserInDB = Depends(auth.get_current_active_admin)
 ):
     appointments_list = []
     for a in appointments:
         appointment_datetime = models.combine_date_time(a["date"], a["time"])
-        if appointment_datetime.month == month:
+        if appointment_datetime.month == month and appointment_datetime.year == year:
             appointments_list.append(a)
 
     if not appointments_list:
         raise HTTPException(
-            status_code=404, detail="Appointments not found for this month"
+            status_code=404, detail="Appointments not found for this month and year"
         )
-
+        
+    appointments_list.sort(key=lambda x: (datetime.strptime(x['date'], "%d-%m-%Y"), datetime.strptime(x['time'], "%H:%M")))
     return appointments_list

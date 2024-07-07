@@ -175,14 +175,14 @@ def test_admin_workflow():
     })
     
     # Get all appointments as admin
-    get_appointments_response = client.get("/v1/admin/appointments/all", headers=admin_headers)
+    get_appointments_response = client.get("/v1/appointments/all", headers=admin_headers)
     assert get_appointments_response.status_code == 200
     appointments_data = get_appointments_response.json()
     print("data: ",appointments_data)
     assert len(appointments_data) == 3
-    assert appointments_data[0]["id"] == 1
-    assert appointments_data[1]["id"] == 3
-    assert appointments_data[2]["id"] == 4
+    assert appointments_data[0]["id"] == 3
+    assert appointments_data[1]["id"] == 4
+    assert appointments_data[2]["id"] == 1
     
     # Get appointments by phone
     response = client.get(
@@ -193,8 +193,8 @@ def test_admin_workflow():
     assert len(data) == 2
     assert data[0]["phone"] == "2222222222"
     
-    #Get appointments by month
-    response = client.get("/v1/admin/appointments/month/10", headers=admin_headers)
+    #Get appointments by month and year
+    response = client.get("/v1/admin/appointments/month/10/year/2024", headers=admin_headers)
     assert response.status_code == 200
     data = response.json()
     assert len(data) == 3

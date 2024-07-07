@@ -2,11 +2,11 @@ FROM python:3.10.14
 
 WORKDIR /app
 
-COPY ./backend/requirements.txt .
+COPY requirements.txt .
 
 RUN pip install -r requirements.txt
 
-COPY ./backend/ ./
+COPY . .
 
 EXPOSE 8000
 

@@ -288,7 +288,7 @@ def test_admin_get_appointments():
     admin_headers = login_user("admin", "admin")
 
     # Get all appointments as admin
-    response = client.get("/v1/admin/appointments/all", headers=admin_headers)
+    response = client.get("/v1/appointments/all", headers=admin_headers)
     assert response.status_code == 200
     data = response.json()
     assert len(data) == 2
@@ -314,7 +314,7 @@ def test_admin_get_appointments_by_phone():
     assert data[0]["phone"] == "1234567890"
 
 
-# Test admin get appointments by month
+# Test admin get appointments by month and year
 def test_admin_get_appointments_by_month():
     # Register and login user to create appointments
     register_user()
@@ -324,7 +324,7 @@ def test_admin_get_appointments_by_month():
     create_appointment(user_headers)
 
     admin_headers = login_user("admin", "admin")
-    response = client.get("/v1/admin/appointments/month/10", headers=admin_headers)
+    response = client.get("/v1/admin/appointments/month/10/year/2024", headers=admin_headers)
     assert response.status_code == 200
     data = response.json()
     assert len(data) == 1

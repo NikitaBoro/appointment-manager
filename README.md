@@ -1,6 +1,6 @@
-# Appointment Manager
+# Hair And Nail Salon Appointment Manager
 
-Appointment Manager is a web application designed to simplify the process of scheduling and managing appointments. Built with FastAPI for the backend (Streamlit for the frontend and MongoDB for the database will be added in the future). This application provides functionality for user authentication, appointment booking, and administrative controls. Users can create, update, and delete their appointments, while administrators have additional capabilities to manage users and view all appointments.
+Hair And Nail Salon Appointment Manager is a web application designed to simplify the process of scheduling and managing appointments. Built with FastAPI for the backend and Streamlit for the frontend (MongoDB for the database will be added in the future). This application provides functionality for user authentication, appointment booking, and administrative controls. Users can create, update, and delete their appointments, while administrators have additional capabilities to manage users and view all appointments.
 
 ## Features
 
@@ -37,14 +37,9 @@ Go to project directory:
 cd appointment-manager 
 ```
 
-Build the Docker container:
+Build the Docker containers:
 ```
-docker build -t appointment-manager . -f Dockerfile
-```
-
-Run the Docker container:
-```
-docker run -p8000:8000 appointment-manager
+docker-compose up --build
 ```
 
 Run unit and integration tests using:
@@ -55,7 +50,8 @@ pytest integration_test.py
 
 ## Access
 
-Once the containers are running, you can access the backend in your web browser at http://localhost:8000/docs
+Once the containers are running, you can access the frontend in your browser at http://localhost:8501/
+and the backend at http://localhost:8000/docs
 
 ## Illustration
 
@@ -64,5 +60,6 @@ Once the containers are running, you can access the backend in your web browser 
 ## Built with
 
 **Backend** - Python, FastAPI
+**Frontend** - Streamlit
 
 

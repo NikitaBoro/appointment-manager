@@ -95,3 +95,11 @@ async def get_current_active_admin(
     if current_user.role != "admin":
         raise HTTPException(status_code=400, detail="Not enough permissions")
     return current_user
+
+
+async def get_current_active_user_or_admin(
+    current_user: models.UserInDB = Depends(get_current_user),
+):
+    if current_user.disabled:
+        raise HTTPException(status_code=400, detail="Inactive user")
+    return current_user

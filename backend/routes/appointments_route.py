@@ -3,6 +3,7 @@ from typing import List
 import models
 import auth
 from data import appointments, current_id
+from datetime import datetime
 
 router = APIRouter()
 
@@ -22,6 +23,17 @@ def create_appointment(
     return appointment
 
 
+
+# Get all appointments for all users
+@router.get("/appointments/all", response_model=List[models.Appointment])
+def get_all_appointments(current_user: models.UserInDB = Depends(auth.get_current_active_user_or_admin)):
+    if not appointments:
+        raise HTTPException(status_code=404, detail="Appointments not found")
+    
+    sorted_appointments = sorted(appointments, key=lambda x: (datetime.strptime(x['date'], "%d-%m-%Y"), datetime.strptime(x['time'], "%H:%M")))
+    return sorted_appointments
+
+
 # Get all appointments for a specific user
 @router.get("/appointments", response_model=List[models.Appointment])
 def get_appointments(
@@ -33,6 +45,8 @@ def get_appointments(
             user_appointments.append(a)
     if not user_appointments:
         raise HTTPException(status_code=404, detail="Appointments not found")
+    
+    user_appointments.sort(key=lambda x: (datetime.strptime(x['date'], "%d-%m-%Y"), datetime.strptime(x['time'], "%H:%M")))
     return user_appointments
 
 
