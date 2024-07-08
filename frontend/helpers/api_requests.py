@@ -1,7 +1,7 @@
 import requests
 import streamlit as st
 
-backend_url = "http://localhost:8000"
+backend_url = "http://backend:8000"
 
 
 # Function to get logged user info

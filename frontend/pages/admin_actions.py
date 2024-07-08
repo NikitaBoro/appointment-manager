@@ -43,6 +43,14 @@ def admin_actions_page():
         st.session_state["show_apps_m_y"] = True
         st.session_state["show_apps_phone"] = False
 
+    # Initialize session state for input values
+    if "phone_num" not in st.session_state:
+        st.session_state["phone_num"] = ""
+    if "month" not in st.session_state:
+        st.session_state["month"] = 1
+    if "year" not in st.session_state:
+        st.session_state["year"] = 2024
+
     col1, col2, col3 = st.columns([2, 2, 1])
 
     with col1:
@@ -86,16 +94,27 @@ def admin_actions_page():
     st.divider()
     # Get appointments by phone number
     st.write("### Appointments by Phone")
-    phone = st.text_input("Enter phone number")
+    st.session_state["phone_num"] = st.text_input(
+        "Enter phone number", st.session_state["phone_num"]
+    )
+    if st.button("Reset", key="reset_apps_by_phone"):
+        st.session_state["phone_num"] = ""
+        st.session_state["show_apps_phone"] = False
+        st.session_state["expander_users_open"] = False
+        st.session_state["expander_all_app_open"] = False
+        st.rerun()
+
     if (
         st.button(
             "Get Appointments", key="appointments_by_phone", on_click=callback_phone
         )
         or st.session_state["show_apps_phone"]
     ):
-        appointments_by_phone = get_appointments_by_phone(token, phone)
+        appointments_by_phone = get_appointments_by_phone(
+            token, st.session_state["phone_num"]
+        )
         if not appointments_by_phone:
-            st.error(f"No appointments for phone {phone}")
+            st.error(f"No appointments for phone {st.session_state['phone_num']}")
         else:
             for appointment in appointments_by_phone:
                 render_appointment(appointment, "phone", "show_apps_phone")
@@ -103,15 +122,39 @@ def admin_actions_page():
 
     # Get appointments by month and year
     st.write("### Appointments by Month and Year")
-    month = st.number_input("Enter month (1-12)", min_value=1, max_value=12, step=1)
-    year = st.number_input("Enter year", min_value=2024, max_value=9999, step=1)
+    st.session_state["month"] = st.number_input(
+        "Enter month (1-12)",
+        min_value=1,
+        max_value=12,
+        step=1,
+        value=st.session_state["month"],
+    )
+    st.session_state["year"] = st.number_input(
+        "Enter year",
+        min_value=2024,
+        max_value=9999,
+        step=1,
+        value=st.session_state["year"],
+    )
+    if st.button("Reset", key="reset_apps_by_m_y"):
+        st.session_state["month"] = 1
+        st.session_state["year"] = 2024
+        st.session_state["show_apps_m_y"] = False
+        st.session_state["expander_users_open"] = False
+        st.session_state["expander_all_app_open"] = False
+        st.rerun()
+
     if (
         st.button("Get Appointments", key="appointments_by_date", on_click=callback_m_y)
         or st.session_state["show_apps_m_y"]
     ):
-        appointments_by_month = get_appointments_by_month_year(token, month, year)
+        appointments_by_month = get_appointments_by_month_year(
+            token, st.session_state["month"], st.session_state["year"]
+        )
         if not appointments_by_month:
-            st.error(f"No appointments for month {month}")
+            st.error(
+                f"No appointments for {st.session_state['month']}/{st.session_state['year']}"
+            )
         else:
             for appointment in appointments_by_month:
                 render_appointment(appointment, "month_year", "show_apps_m_y")

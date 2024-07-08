@@ -4,12 +4,24 @@ from helpers.api_requests import get_all_appointments, update_appointment
 
 
 # Function to generate a list of the next 100 days
-def generate_date_options():
+def generate_date_options(appointment_date):
     today = datetime.today()
-    date_options = [
-        today + timedelta(days=i) for i in range(0, 100)
-    ]  # Generate dates for the next 60 days
-    return [date.strftime("%d-%m-%Y") for date in date_options]
+    appointment_date_obj = datetime.strptime(appointment_date, "%d-%m-%Y").date()
+
+    # Get the earliest date between today and the appointment date
+    start_date = min(today.date(), appointment_date_obj)
+
+    # Generate dates for the next 100 days from the start date
+    date_options = [start_date + timedelta(days=i) for i in range(101)]
+
+    # Convert the dates to the required string format
+    date_options_str = [date.strftime("%d-%m-%Y") for date in date_options]
+
+    # Ensure the appointment date is included
+    if appointment_date not in date_options_str:
+        date_options_str.append(appointment_date)
+
+    return date_options_str
 
 
 def update_appointment_page():
@@ -28,7 +40,7 @@ def update_appointment_page():
 
     service_options = ["Manicure", "Pedicure", "Haircut"]
     time_slots = [f"{hour:02d}:00" for hour in range(8, 23)]
-    date_options = generate_date_options()
+    date_options = generate_date_options(appointment["date"])
 
     # Get all appointments
     all_appointments = get_all_appointments(st.session_state["token"])
