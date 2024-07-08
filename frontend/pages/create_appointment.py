@@ -1,7 +1,7 @@
 import streamlit as st
 import requests
 from datetime import datetime
-from helpers.api_requests import backend_url, get_all_appointments
+from helpers.api_requests import create_appointment, get_all_appointments
 
 
 def create_appointment_page():
@@ -67,18 +67,9 @@ def create_appointment_page():
                 "time": time_slot,
                 "service": service,
             }
-            headers = {"Authorization": f"Bearer {st.session_state['token']}"}
-            response = requests.post(
-                f"{backend_url}/v1/appointments", json=appointment_data, headers=headers
-            )
-            if response.status_code == 200:
-                st.success("Appointment created successfully")
+            if create_appointment(st.session_state["token"], appointment_data):
                 st.session_state["page"] = "Main Page"
                 st.rerun()
-            else:
-                st.error(
-                    f"Failed to create appointment: {response.json().get('detail', 'Unknown error')}"
-                )
 
     if st.button("Back"):
         st.session_state["page"] = "Main Page"

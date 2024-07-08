@@ -11,7 +11,6 @@ from pages.admin_actions import admin_actions_page
 def main():
     st.title("✂️ Hair And Nail Salon 💅")
 
-
     # Determine which page to display based on session state
     page = st.session_state.get("page", "Login")
 

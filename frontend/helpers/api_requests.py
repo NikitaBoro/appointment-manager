@@ -1,7 +1,8 @@
 import requests
 import streamlit as st
 
-backend_url = "http://backend:8000"
+backend_url = "http://localhost:8000"
+
 
 # Function to get logged user info
 def get_user_info(token):
@@ -12,7 +13,8 @@ def get_user_info(token):
     else:
         st.error("Failed to fetch user info")
         return None
-    
+
+
 # Function to get logged user appointments
 def get_user_appointments(token):
     headers = {"Authorization": f"Bearer {token}"}
@@ -21,6 +23,7 @@ def get_user_appointments(token):
         return response.json()
     else:
         return []
+
 
 # Function to get all appointments
 def get_all_appointments(token):
@@ -36,6 +39,7 @@ def get_all_appointments(token):
         )
         return []
 
+
 # Function to get all appointments for a specific phone number
 def get_appointments_by_phone(token, phone):
     headers = {"Authorization": f"Bearer {token}"}
@@ -46,6 +50,7 @@ def get_appointments_by_phone(token, phone):
         return response.json()
     else:
         return []
+
 
 # Function to get all appointments for a spesific month and year
 def get_appointments_by_month_year(token, month, year):
@@ -58,7 +63,24 @@ def get_appointments_by_month_year(token, month, year):
         return response.json()
     else:
         return []
-    
+
+
+# Function to create appointment
+def create_appointment(token, appointment_data):
+    headers = {"Authorization": f"Bearer {token}"}
+    response = requests.post(
+        f"{backend_url}/v1/appointments", json=appointment_data, headers=headers
+    )
+    if response.status_code == 200:
+        st.success("Appointment created successfully")
+        return True
+    else:
+        st.error(
+            f"Failed to create appointment: {response.json().get('detail', 'Unknown error')}"
+        )
+        return False
+
+
 # Function to delete appointment
 def delete_appointment(token, appointment_id):
     headers = {"Authorization": f"Bearer {token}"}
@@ -69,12 +91,18 @@ def delete_appointment(token, appointment_id):
         st.success("Appointment deleted successfully")
     else:
         st.error("Failed to delete appointment")
-        
+
+
 # Function to update appointment
 def update_appointment(token, appointment_id, appointment_data):
     headers = {"Authorization": f"Bearer {token}"}
-    response = requests.put(f"{backend_url}/v1/appointments/{appointment_id}", json=appointment_data, headers=headers)
+    response = requests.put(
+        f"{backend_url}/v1/appointments/{appointment_id}",
+        json=appointment_data,
+        headers=headers,
+    )
     return response
+
 
 # Function to get all users
 def get_all_users(token):

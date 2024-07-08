@@ -1,5 +1,7 @@
 import streamlit as st
-from .api_requests import delete_user,delete_appointment
+import datetime
+from .api_requests import delete_user, delete_appointment
+
 
 # Function to render user info
 def render_user(user, current_page_key):
@@ -25,11 +27,27 @@ def render_appointment(appointment, current_page_key, state_key=None):
     st.write(f"**Date:** {appointment['date']}")
     st.write(f"**Time:** {appointment['time']}")
     st.write(f"**Service:** {appointment['service']}")
+
+    # Combine appointment date and time for comparison
+    appointment_datetime = datetime.datetime.strptime(
+        f"{appointment['date']} {appointment['time']}", "%d-%m-%Y %H:%M"
+    )
+    current_datetime = datetime.datetime.now()
+
+    # Text for if appointment time has passed
+    if appointment_datetime < current_datetime:
+        st.markdown(
+            "<span style='color:red'>**Status:** This appointment has passed</span>",
+            unsafe_allow_html=True,
+        )
+
     col1, col2, col3 = st.columns([2, 2, 2])
     with col1:
         if st.button(
             f"Update Appointment",
             key=f"update_appointment_{appointment['id']}_{current_page_key}",
+            disabled=appointment_datetime
+            < current_datetime,  # Disable if appointment is in the past
         ):
             st.session_state["selected_appointment"] = appointment
             st.session_state["page"] = "Update Appointment"

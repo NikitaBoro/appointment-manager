@@ -3,6 +3,7 @@ import streamlit as st
 # Number of items to display per page
 ITEMS_PER_PAGE = 3
 
+
 # Function to create an expanding list with pagination
 def expander_with_pagination(
     title, items, item_renderer, expander_state_key, current_page_key
@@ -47,5 +48,3 @@ def expander_with_pagination(
                     st.session_state[current_page_key] += 1
                     st.session_state[expander_state_key] = True
                     st.rerun()
-
-
