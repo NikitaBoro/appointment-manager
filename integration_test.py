@@ -36,7 +36,7 @@ def create_appointment(token_headers: dict, appointment_data: dict = {
         "id": current_id,
         "name": "Test User",
         "phone": "1234567890",
-        "date": "17-10-2024",
+        "date": "17-10-2025",
         "time": "10:00",
         "service": "Manicure"
     }):
@@ -66,7 +66,7 @@ def test_user_workflow():
             "id": current_id+1,
             "name": "Test User",
             "phone": "1234567890",
-            "date": "20-10-2024",
+            "date": "20-10-2025",
             "time": "13:00","service": "Manicure",
         },
     )
@@ -81,14 +81,14 @@ def test_user_workflow():
     assert data[0]["id"] == 1
     assert data[0]["phone"] == "1234567890"
     assert data[0]["name"] == "Test User"
-    assert data[0]["date"] == "17-10-2024"
+    assert data[0]["date"] == "17-10-2025"
     assert data[0]["time"] == "10:00"
     assert data[0]["service"] == "Manicure"
     
     assert data[1]["id"] == 2
     assert data[1]["phone"] == "1234567890"
     assert data[1]["name"] == "Test User"
-    assert data[1]["date"] == "20-10-2024"
+    assert data[1]["date"] == "20-10-2025"
     assert data[1]["time"] == "13:00"
     assert data[1]["service"] == "Manicure"
     
@@ -99,7 +99,7 @@ def test_user_workflow():
             "id": data[0]["id"],
             "name": "Test User",
             "phone": "1234567890",
-            "date": "18-10-2024",
+            "date": "18-10-2025",
             "time": "16:00",
             "service": "Pedicure",
         },
@@ -110,7 +110,7 @@ def test_user_workflow():
     print("Update Appointments: ",data_updated_appointment)
     assert data_updated_appointment["id"] == 1
     assert data_updated_appointment["name"] == "Test User"
-    assert data_updated_appointment["date"] == "18-10-2024"
+    assert data_updated_appointment["date"] == "18-10-2025"
     assert data_updated_appointment["time"] == "16:00"
     assert data_updated_appointment["service"] == "Pedicure"
     
@@ -161,7 +161,7 @@ def test_admin_workflow():
         "id": current_id + 1,
         "name": "Test User2",
         "phone": "2222222222",
-        "date": "17-10-2024",
+        "date": "17-10-2025",
         "time": "10:00",
         "service": "Manicure"
     })
@@ -169,7 +169,7 @@ def test_admin_workflow():
         "id": current_id + 1,
         "name": "Test User2",
         "phone": "2222222222",
-        "date": "18-10-2024",
+        "date": "18-10-2025",
         "time": "11:00",
         "service": "Pedicure"
     })
@@ -194,7 +194,7 @@ def test_admin_workflow():
     assert data[0]["phone"] == "2222222222"
     
     #Get appointments by month and year
-    response = client.get("/v1/admin/appointments/month/10/year/2024", headers=admin_headers)
+    response = client.get("/v1/admin/appointments/month/10/year/2025", headers=admin_headers)
     assert response.status_code == 200
     data = response.json()
     assert len(data) == 3

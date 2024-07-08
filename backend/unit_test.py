@@ -64,7 +64,7 @@ def create_appointment(
         "id": current_id,
         "name": "Test User",
         "phone": "1234567890",
-        "date": "17-10-2024",
+        "date": "17-10-2025",
         "time": "10:00",
         "service": "Manicure",
     },
@@ -127,7 +127,7 @@ def test_create_appointment():
     data = response.json()
     assert data["phone"] == "1234567890"
     assert data["name"] == "Test User"
-    assert data["date"] == "17-10-2024"
+    assert data["date"] == "17-10-2025"
     assert data["time"] == "10:00"
     assert data["service"] == "Manicure"
 
@@ -147,7 +147,7 @@ def test_get_appointments():
     assert len(data) == 1
     assert data[0]["phone"] == "1234567890"
     assert data[0]["name"] == "Test User"
-    assert data[0]["date"] == "17-10-2024"
+    assert data[0]["date"] == "17-10-2025"
     assert data[0]["time"] == "10:00"
     assert data[0]["service"] == "Manicure"
 
@@ -170,7 +170,7 @@ def test_update_appointment():
             "id": appointment_id,
             "name": "Test User",
             "phone": "1234567890",
-            "date": "18-10-2024",
+            "date": "18-10-2025",
             "time": "11:00",
             "service": "Pedicure",
         },
@@ -179,7 +179,7 @@ def test_update_appointment():
     assert update_response.status_code == 200
     data = update_response.json()
     assert data["name"] == "Test User"
-    assert data["date"] == "18-10-2024"
+    assert data["date"] == "18-10-2025"
     assert data["time"] == "11:00"
     assert data["service"] == "Pedicure"
 
@@ -278,7 +278,7 @@ def test_admin_get_appointments():
             "id": current_id + 1,
             "name": "Test User",
             "phone": "1234567890",
-            "date": "18-10-2024",
+            "date": "18-10-2025",
             "time": "11:00",
             "service": "Pedicure",
         },
@@ -324,7 +324,7 @@ def test_admin_get_appointments_by_month():
     create_appointment(user_headers)
 
     admin_headers = login_user("admin", "admin")
-    response = client.get("/v1/admin/appointments/month/10/year/2024", headers=admin_headers)
+    response = client.get("/v1/admin/appointments/month/10/year/2025", headers=admin_headers)
     assert response.status_code == 200
     data = response.json()
     assert len(data) == 1
