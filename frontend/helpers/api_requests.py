@@ -101,7 +101,13 @@ def update_appointment(token, appointment_id, appointment_data):
         json=appointment_data,
         headers=headers,
     )
-    return response
+    if response.status_code == 200:
+        return response
+    else:
+        st.error(
+            f"Failed to update appointment: {response.json().get('detail', 'Unknown error')}"
+        )
+        return response
 
 
 # Function to get all users
