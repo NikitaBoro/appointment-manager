@@ -22,7 +22,7 @@ def login_page():
                 st.session_state["page"] = "Main Page"
                 st.rerun()
         else:
-            st.error("Login failed: Incorrect phone or password")
+            st.error(f"Login failed: {response.json()['detail']}")
 
     if st.button("Register"):
         st.session_state["page"] = "Register"

@@ -67,9 +67,15 @@ def create_appointment_page():
                 "time": time_slot,
                 "service": service,
             }
-            if create_appointment(st.session_state["token"], appointment_data):
+            response = create_appointment(st.session_state["token"], appointment_data)
+            if response.status_code == 200:
+                st.success("Appointment created successfully")
                 st.session_state["page"] = "Main Page"
                 st.rerun()
+            else:
+                st.error(
+                    f"Failed to create appointment: {response.json().get('detail', 'Unknown error')}"
+                )
 
     if st.button("Back"):
         st.session_state["page"] = "Main Page"

@@ -107,7 +107,9 @@ def update_appointment_page():
                 st.session_state["page"] = "Profile"
                 st.rerun()
             else:
-                st.error("Failed to update appointment")
+                st.error(
+                    f"Failed to update appointment: {response.json().get('detail', 'Unknown error')}"
+                )
 
     if st.button("Back to Profile"):
         st.session_state["page"] = "Profile"

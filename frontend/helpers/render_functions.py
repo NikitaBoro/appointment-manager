@@ -1,5 +1,6 @@
 import streamlit as st
 import datetime
+import requests
 from .api_requests import delete_user, delete_appointment
 
 
@@ -14,9 +15,13 @@ def render_user(user, current_page_key):
         key=f"delete_user_{user['phone']}_{current_page_key}",
         type="primary",
     ):
-        delete_user(st.session_state["token"], user["phone"])
-        st.session_state["expander_users_open"] = True
-        st.rerun()
+        respone = delete_user(st.session_state["token"], user["phone"])
+        if respone.status_code == 200:
+            st.success(f"User with phone {user['phone']} deleted successfully")
+            st.session_state["expander_users_open"] = True
+            st.rerun()
+        else:
+            st.error(f"Failed to delete user with phone {user['phone']}")
 
 
 # Function to render appointment info
@@ -60,5 +65,11 @@ def render_appointment(appointment, current_page_key, state_key=None):
             key=f"delete_appointment_{appointment['id']}_{current_page_key}",
             type="primary",
         ):
-            delete_appointment(st.session_state["token"], appointment["id"])
-            st.rerun()
+            response = delete_appointment(st.session_state["token"], appointment["id"])
+            if response.status_code == 200:
+                st.success("Appointment deleted successfully")
+                st.rerun()
+            else:
+                st.error(
+                    f"Failed to delete appointment: {response.json().get('detail', 'Unknown error')}"
+                )

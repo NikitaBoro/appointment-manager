@@ -24,7 +24,7 @@ def initialize_session_state():
         "show_apps_m_y": False,  # State of the list of appointments by month and year (if we used it keep the list open when we click on other buttons)
         "phone_num": "",  # Deafult value in the search by phone input field
         "month": 1,  # Deafult value in the search by month input field
-        "year": datetime.now().year  # Deafult value in the search by year input field
+        "year": datetime.now().year,  # Deafult value in the search by year input field
     }
 
     # Set each key to its default value if the key doesn't exist in the session state

@@ -71,14 +71,7 @@ def create_appointment(token, appointment_data):
     response = requests.post(
         f"{backend_url}/v1/appointments", json=appointment_data, headers=headers
     )
-    if response.status_code == 200:
-        st.success("Appointment created successfully")
-        return True
-    else:
-        st.error(
-            f"Failed to create appointment: {response.json().get('detail', 'Unknown error')}"
-        )
-        return False
+    return response
 
 
 # Function to delete appointment
@@ -87,10 +80,7 @@ def delete_appointment(token, appointment_id):
     response = requests.delete(
         f"{backend_url}/v1/appointments/{appointment_id}", headers=headers
     )
-    if response.status_code == 200:
-        st.success("Appointment deleted successfully")
-    else:
-        st.error("Failed to delete appointment")
+    return response
 
 
 # Function to update appointment
@@ -101,13 +91,7 @@ def update_appointment(token, appointment_id, appointment_data):
         json=appointment_data,
         headers=headers,
     )
-    if response.status_code == 200:
-        return response
-    else:
-        st.error(
-            f"Failed to update appointment: {response.json().get('detail', 'Unknown error')}"
-        )
-        return response
+    return response
 
 
 # Function to get all users
@@ -127,7 +111,4 @@ def get_all_users(token):
 def delete_user(token, phone):
     headers = {"Authorization": f"Bearer {token}"}
     response = requests.delete(f"{backend_url}/v1/admin/users/{phone}", headers=headers)
-    if response.status_code == 200:
-        st.success(f"User with phone {phone} deleted successfully")
-    else:
-        st.error(f"Failed to delete user with phone {phone}")
+    return response
