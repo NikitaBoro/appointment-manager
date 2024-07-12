@@ -63,6 +63,9 @@ async def clean_test_db():
 
 # Tests -----------------------------------------------------------------------------------------------------
 
+
+# Test user workflow
+
 @pytest.mark.asyncio
 async def test_user_workflow():
     await clean_test_db()  # Make sure database is clear before test
@@ -151,6 +154,8 @@ async def test_user_workflow():
     print("after deletion: ",data_after_deletion)
     assert not any(app["id"] == data[1]["id"] for app in data_after_deletion)
 
+
+# Test admin workflow
 
 @pytest.mark.asyncio
 async def test_admin_workflow():
