@@ -68,6 +68,7 @@ def main_page():
                 st.rerun()
 
             st.divider()
+            st.subheader("Select a day to book an appointment:")
 
             # Navigation buttons for previous and next months
             col1, col2, col3 = st.columns([1, 2, 1])
