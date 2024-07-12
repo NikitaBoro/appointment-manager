@@ -5,7 +5,7 @@ from datetime import datetime, timedelta, timezone
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 import models
-from data import db
+from database import users_collection
 
 SECRET_KEY = "7405114844cf1cc085f408c2d33561cacbcb8530499feabc295df77970d70aeb"
 ALGORITHM = "HS256"
@@ -27,15 +27,15 @@ def get_password_hash(password):
 
 
 # get user from DB
-def get_user(db, phone: str):
-    if phone in db:
-        user_data = db[phone]
+async def get_user(phone: str):
+    user_data = await users_collection.find_one({"phone": phone})
+    if user_data:
         return models.UserInDB(**user_data)
 
 
 # function to authenticate if user exists and the password is correct
-def authenticate_user(db, phone: str, password: str):
-    user = get_user(db, phone)
+async def authenticate_user(phone: str, password: str):
+    user = await get_user(phone)
     if not user:
         return False
     if not verify_password(password, user.hashed_password):
@@ -73,7 +73,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
     except JWTError:
         raise credential_exception
 
-    user = get_user(db, phone=token_data.phone)
+    user = await get_user(phone=token_data.phone)
     if user is None:
         raise credential_exception
 
@@ -89,17 +89,10 @@ async def get_current_active_user(
     return current_user
 
 
+# check if user is admin
 async def get_current_active_admin(
     current_user: models.UserInDB = Depends(get_current_user),
 ):
     if current_user.role != "admin":
         raise HTTPException(status_code=400, detail="Not enough permissions")
-    return current_user
-
-
-async def get_current_active_user_or_admin(
-    current_user: models.UserInDB = Depends(get_current_user),
-):
-    if current_user.disabled:
-        raise HTTPException(status_code=400, detail="Inactive user")
     return current_user

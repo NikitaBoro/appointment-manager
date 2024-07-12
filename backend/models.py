@@ -1,6 +1,6 @@
 from pydantic import BaseModel, field_validator
 from datetime import datetime
-from typing import List, Optional
+from typing import Optional
 
 
 class Token(BaseModel):
@@ -31,13 +31,6 @@ class Appointment(BaseModel):
     date: str  # dd-mm-yyyy format
     time: str  # hh:mm format
     service: str
-
-    @field_validator("date")
-    def check_date(cls, value):
-        formmated_date = datetime.strptime(value, "%d-%m-%Y").date()
-        if formmated_date < datetime.now().date():
-            raise ValueError("Invalid date")
-        return value
 
     @field_validator("time")
     def check_time(cls, value):

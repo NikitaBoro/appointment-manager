@@ -10,19 +10,23 @@ def login_page():
     password = st.text_input("Password", type="password")
 
     if st.button("Login"):
-        response = requests.post(
-            f"{backend_url}/v1/token", data={"username": phone, "password": password}
-        )
-        if response.status_code == 200:
-            token = response.json()["access_token"]
-            if token:
-                st.session_state["token"] = token
-                st.session_state["logged_in"] = True
-                st.session_state["phone"] = phone
-                st.session_state["page"] = "Main Page"
-                st.rerun()
+        if not phone or not password:
+            st.error("Missing phone or password")
         else:
-            st.error(f"Login failed: {response.json()['detail']}")
+            response = requests.post(
+                f"{backend_url}/v1/token",
+                data={"username": phone, "password": password},
+            )
+            if response.status_code == 200:
+                token = response.json()["access_token"]
+                if token:
+                    st.session_state["token"] = token
+                    st.session_state["logged_in"] = True
+                    st.session_state["phone"] = phone
+                    st.session_state["page"] = "Main Page"
+                    st.rerun()
+            else:
+                st.error(f"Login failed: {response.json()['detail']}")
 
     if st.button("Register"):
         st.session_state["page"] = "Register"

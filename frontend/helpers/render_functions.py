@@ -1,6 +1,5 @@
 import streamlit as st
 import datetime
-import requests
 from .api_requests import delete_user, delete_appointment
 
 

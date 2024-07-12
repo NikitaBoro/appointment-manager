@@ -1,5 +1,4 @@
 import streamlit as st
-import requests
 from helpers.render_functions import render_appointment
 from helpers.pagination import expander_with_pagination
 from helpers.api_requests import get_user_info, get_user_appointments

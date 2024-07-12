@@ -1,5 +1,4 @@
 import streamlit as st
-import requests
 from datetime import datetime
 from helpers.api_requests import create_appointment, get_all_appointments
 

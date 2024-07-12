@@ -7,6 +7,8 @@ services:
     container_name: backend
     ports:
       - "8000:8000"
+    depends_on:
+      - mongo
     networks:
       - app-network
 
@@ -21,7 +23,26 @@ services:
       - backend
     networks:
       - app-network
+    
+  mongo:
+    image: mongo
+    container_name: mongodb
+    environment:
+      MONGO_INITDB_DATABASE: appointment_manager
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
+    volumes:
+      - mongo_data:/data/db
+      - ./backend/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    ports:
+      - "27017:27017"
+    networks:
+      - app-network
+    command: mongod --quiet --logpath /dev/null 
 
 networks:
   app-network:
     driver: bridge
+
+volumes:
+  mongo_data:
