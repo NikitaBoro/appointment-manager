@@ -40,7 +40,7 @@ def register_page():
 
             # Registration request
             response = requests.post(
-                f"{backend_url}/v1/register",
+                f"{backend_url}/v1/user/register",
                 json={
                     "phone": phone,
                     "full_name": full_name,

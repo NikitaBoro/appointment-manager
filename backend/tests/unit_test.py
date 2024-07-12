@@ -23,7 +23,7 @@ async def register_user(
 ):
     async with AsyncClient(app=app, base_url="http://test") as ac:
         response = await ac.post(
-            "/v1/register",
+            "/v1/user/register",
             json={"phone": phone, "full_name": full_name, "email": email, "role": role},
             params={"password": password},
         )
@@ -34,7 +34,7 @@ async def register_user(
 async def login_user(phone: str, password: str):
     async with AsyncClient(app=app, base_url="http://test") as ac:
         response = await ac.post(
-            "/v1/token", data={"username": phone, "password": password}
+            "/v1/user/token", data={"username": phone, "password": password}
         )
     token = response.json()["access_token"]
     return {"Authorization": f"Bearer {token}"}
@@ -73,7 +73,7 @@ async def clean_test_db():
 async def test_register_user():
     async with AsyncClient(app=app, base_url="http://test") as ac:
         response = await ac.post(
-            "/v1/register",
+            "/v1/user/register",
             json={
                 "phone": "1234567890",
                 "full_name": "Test User",
@@ -102,7 +102,7 @@ async def test_login_for_access_token():
     await register_user()
     user_data = {"username": "1234567890", "password": "password123"}
     async with AsyncClient(app=app, base_url="http://test") as ac:
-        response = await ac.post("/v1/token", data=user_data)
+        response = await ac.post("/v1/user/token", data=user_data)
     assert response.status_code == 200
     data = response.json()
     assert "access_token" in data
@@ -120,7 +120,7 @@ async def test_read_users_me():
 
     # Get user info
     async with AsyncClient(app=app, base_url="http://test") as ac:
-        response = await ac.get("/v1/users/me", headers=headers)
+        response = await ac.get("/v1/user/me", headers=headers)
     assert response.status_code == 200
     data = response.json()
     assert data["phone"] == "1234567890"
@@ -263,7 +263,7 @@ async def test_admin_login():
     # Login as admin
     async with AsyncClient(app=app, base_url="http://test") as ac:
         response = await ac.post(
-            "/v1/token", data={"username": "admin", "password": "admin"}
+            "/v1/user/token", data={"username": "admin", "password": "admin"}
         )
     assert response.status_code == 200
     data = response.json()

@@ -24,7 +24,7 @@ async def register_user(
 ):
     async with AsyncClient(app=app,base_url="http://test") as ac:
         response = await ac.post(
-            "/v1/register",
+            "/v1/user/register",
             json={"phone": phone, "full_name": full_name, "email": email, "role": role},
             params={"password": password},
         )
@@ -33,7 +33,7 @@ async def register_user(
 # Helper function to login and get token
 async def login_user(phone: str, password: str):
     async with AsyncClient(app=app,base_url="http://test") as ac:
-        response = await ac.post("/v1/token", data={"username": phone, "password": password})
+        response = await ac.post("/v1/user/token", data={"username": phone, "password": password})
     token = response.json()["access_token"]
     return {"Authorization": f"Bearer {token}"}
 

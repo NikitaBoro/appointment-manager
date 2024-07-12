@@ -14,7 +14,7 @@ def login_page():
             st.error("Missing phone or password")
         else:
             response = requests.post(
-                f"{backend_url}/v1/token",
+                f"{backend_url}/v1/user/token",
                 data={"username": phone, "password": password},
             )
             if response.status_code == 200:

@@ -7,7 +7,7 @@ backend_url = "http://backend:8000"
 # Function to get logged user info
 def get_user_info(token):
     headers = {"Authorization": f"Bearer {token}"}
-    response = requests.get(f"{backend_url}/v1/users/me", headers=headers)
+    response = requests.get(f"{backend_url}/v1/user/me", headers=headers)
     if response.status_code == 200:
         return response.json()
     else:

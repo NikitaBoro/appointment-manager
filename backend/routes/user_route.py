@@ -41,7 +41,7 @@ async def register_user(user: models.User, password: str):
 
 
 # Get logged user information
-@router.get("/users/me", response_model=models.User)
+@router.get("/me", response_model=models.User)
 async def read_users_me(
     current_user: models.User = Depends(auth.get_current_active_user),
 ):
