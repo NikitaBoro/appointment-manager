@@ -57,14 +57,16 @@ async def create_appointment(
 
 # Helper function to clear database    
 async def clean_test_db():
-    test_appointments_collection.delete_many({})
-    test_users_collection.delete_many({})
+    await test_appointments_collection.delete_many({})
+    await test_users_collection.delete_many({})
 
 
 # Tests -----------------------------------------------------------------------------------------------------
 
 @pytest.mark.asyncio
 async def test_user_workflow():
+    await clean_test_db()  # Make sure database is clear before test
+    
     # Register user
     response = await register_user()
     assert response.status_code == 200

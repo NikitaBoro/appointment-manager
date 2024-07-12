@@ -61,8 +61,8 @@ async def create_appointment(
 
 # Helper function to clear database
 async def clean_test_db():
-    test_appointments_collection.delete_many({})
-    test_users_collection.delete_many({})
+    await test_appointments_collection.delete_many({})
+    await test_users_collection.delete_many({})
 
 
 # User Tests -----------------------------------------------------------------------------------------------------
@@ -71,6 +71,8 @@ async def clean_test_db():
 # Test user registration
 @pytest.mark.asyncio
 async def test_register_user():
+    await clean_test_db()  # Make sure database is clear before test
+
     async with AsyncClient(app=app, base_url="http://test") as ac:
         response = await ac.post(
             "/v1/user/register",
@@ -93,14 +95,19 @@ async def test_register_user():
     assert user_in_db["full_name"] == "Test User"
     assert user_in_db["email"] == "test@example.com"
 
-    await clean_test_db()  # Clean test database
+    await clean_test_db()  # clean database after test
 
 
 # Test login for access token
 @pytest.mark.asyncio
 async def test_login_for_access_token():
+    await clean_test_db()  # Make sure database is clear before test
+
+    # Register user
     await register_user()
     user_data = {"username": "1234567890", "password": "password123"}
+
+    # Login
     async with AsyncClient(app=app, base_url="http://test") as ac:
         response = await ac.post("/v1/user/token", data=user_data)
     assert response.status_code == 200
@@ -108,14 +115,17 @@ async def test_login_for_access_token():
     assert "access_token" in data
     assert data["token_type"] == "bearer"
 
-    await clean_test_db()  # Clean test database
+    await clean_test_db()  # clean database after test
 
 
 # Test get current user info
 @pytest.mark.asyncio
 async def test_read_users_me():
+    await clean_test_db()  # Make sure database is clear before test
+
     # Register user and login
     await register_user()
+    user_data = {"username": "1234567890", "password": "password123"}
     headers = await login_user("1234567890", "password123")
 
     # Get user info
@@ -126,12 +136,14 @@ async def test_read_users_me():
     assert data["phone"] == "1234567890"
     assert data["full_name"] == "Test User"
 
-    await clean_test_db()  # Clean test database
+    await clean_test_db()  # clean database after test
 
 
 # Test create appointment
 @pytest.mark.asyncio
 async def test_create_appointment():
+    await clean_test_db()  # Make sure database is clear before test
+
     # Register and login user:
     await register_user()
     headers = await login_user("1234567890", "password123")
@@ -146,12 +158,14 @@ async def test_create_appointment():
     assert data["time"] == "10:00"
     assert data["service"] == "Manicure"
 
-    await clean_test_db()  # Clean test database
+    await clean_test_db()  # clean database after test
 
 
 # Test get appointments
 @pytest.mark.asyncio
 async def test_get_appointments():
+    await clean_test_db()  # Make sure database is clear before test
+
     # Register and login user:
     await register_user()
     headers = await login_user("1234567890", "password123")
@@ -170,13 +184,15 @@ async def test_get_appointments():
     assert data[0]["time"] == "10:00"
     assert data[0]["service"] == "Manicure"
 
-    await clean_test_db()  # Clean test database
+    await clean_test_db()  # clean database after test
 
 
 # Test to update appointment
 @pytest.mark.asyncio
 async def test_update_appointment():
-    # Register and login user::
+    await clean_test_db()  # Make sure database is clear before test
+
+    # Register and login user:
     await register_user()
     headers = await login_user("1234567890", "password123")
 
@@ -206,12 +222,14 @@ async def test_update_appointment():
     assert data["time"] == "11:00"
     assert data["service"] == "Pedicure"
 
-    await clean_test_db()  # Clean test database
+    await clean_test_db()  # clean database after test
 
 
 # Test to delete appointment
 @pytest.mark.asyncio
 async def test_delete_appointment():
+    await clean_test_db()  # Make sure database is clear before test
+
     # Register and login user:
     await register_user()
     headers = await login_user("1234567890", "password123")
@@ -236,14 +254,16 @@ async def test_delete_appointment():
         get_response = await ac.get("/v1/appointments", headers=headers)
     assert get_response.status_code == 404
 
-    await clean_test_db()  # Clean test database
+    await clean_test_db()  # clean database after test
 
 
-# Admin Tests -------------------------------------------------------------------------------------------------
+# # Admin Tests -------------------------------------------------------------------------------------------------
 
 
 @pytest.mark.asyncio
 async def test_admin_user_exists():
+    await clean_test_db()  # Make sure database is clear before test
+
     # Create admin user
     await register_user("admin", "admin admin", "admin@example.com", "admin", "admin")
     admin_user = await test_users_collection.find_one({"phone": "admin"})
@@ -251,12 +271,14 @@ async def test_admin_user_exists():
     assert admin_user["full_name"] == "admin admin"
     assert admin_user["email"] == "admin@example.com"
 
-    clean_test_db()  # Clean test database
+    await clean_test_db()  # clean database after test
 
 
 # Test admin login
 @pytest.mark.asyncio
 async def test_admin_login():
+    await clean_test_db()  # Make sure database is clear before test
+
     # Create admin user
     await register_user("admin", "admin admin", "admin@example.com", "admin", "admin")
 
@@ -270,12 +292,14 @@ async def test_admin_login():
     assert "access_token" in data
     assert data["token_type"] == "bearer"
 
-    clean_test_db()  # Clean test database
+    await clean_test_db()  # clean database after test
 
 
 # Test admin get all users
 @pytest.mark.asyncio
 async def test_admin_get_all_users():
+    await clean_test_db()  # Make sure database is clear before test
+
     # Create admin user
     await register_user("admin", "admin admin", "admin@example.com", "admin", "admin")
 
@@ -305,12 +329,14 @@ async def test_admin_get_all_users():
     data = response.json()
     assert len(data) == 3
 
-    await clean_test_db()  # Clean test database
+    await clean_test_db()  # clean database after test
 
 
 # Test admin delete user
 @pytest.mark.asyncio
 async def test_admin_delete_user():
+    await clean_test_db()  # Make sure database is clear before test
+
     # Create admin user
     await register_user("admin", "admin admin", "admin@example.com", "admin", "admin")
 
@@ -335,12 +361,14 @@ async def test_admin_delete_user():
         )
     assert user_response.status_code == 404
 
-    await clean_test_db()  # Clean test database
+    await clean_test_db()  # clean database after test
 
 
 # Test admin get all appointments
 @pytest.mark.asyncio
 async def test_admin_get_appointments():
+    await clean_test_db()  # Make sure database is clear before test
+
     # Create admin user
     await register_user("admin", "admin admin", "admin@example.com", "admin", "admin")
 
@@ -374,12 +402,14 @@ async def test_admin_get_appointments():
     data = response.json()
     assert len(data) == 2
 
-    await clean_test_db()  # Clean test database
+    await clean_test_db()  # clean database after test
 
 
 # Test admin get appointments by phone
 @pytest.mark.asyncio
 async def test_admin_get_appointments_by_phone():
+    await clean_test_db()  # Make sure database is clear before test
+
     # Create admin user
     await register_user("admin", "admin admin", "admin@example.com", "admin", "admin")
 
@@ -403,12 +433,14 @@ async def test_admin_get_appointments_by_phone():
     assert len(data) == 1
     assert data[0]["phone"] == "1234567890"
 
-    await clean_test_db()  # Clean test database
+    await clean_test_db()  # clean database after test
 
 
 # Test admin get appointments by month and year
 @pytest.mark.asyncio
 async def test_admin_get_appointments_by_month():
+    await clean_test_db()  # Make sure database is clear before test
+
     # Create admin user
     await register_user("admin", "admin admin", "admin@example.com", "admin", "admin")
 
@@ -432,4 +464,4 @@ async def test_admin_get_appointments_by_month():
     assert len(data) == 1
     assert data[0]["date"].split("-")[1] == "10"
 
-    await clean_test_db()  # Clean test database
+    await clean_test_db()  # clean database after test
