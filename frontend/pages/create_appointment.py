@@ -1,5 +1,6 @@
 import streamlit as st
 from datetime import datetime
+import time
 from helpers.api_requests import create_appointment, get_all_appointments
 
 
@@ -68,7 +69,8 @@ def create_appointment_page():
             }
             response = create_appointment(st.session_state["token"], appointment_data)
             if response.status_code == 200:
-                st.success("Appointment created successfully")
+                st.toast("Appointment created successfully",  icon="✅")
+                time.sleep(1)
                 st.session_state["page"] = "Main Page"
                 st.rerun()
             else:

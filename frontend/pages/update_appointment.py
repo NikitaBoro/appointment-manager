@@ -1,5 +1,6 @@
 import streamlit as st
 from datetime import datetime, timedelta
+import time
 from helpers.api_requests import get_all_appointments, update_appointment
 
 
@@ -103,7 +104,8 @@ def update_appointment_page():
                 st.session_state["token"], appointment["id"], updated_data
             )
             if response.status_code == 200:
-                st.success("Appointment updated successfully")
+                st.toast("Appointment updated successfully",  icon="✅")
+                time.sleep(1)
                 st.session_state["page"] = "Profile"
                 st.rerun()
             else:

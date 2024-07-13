@@ -1,5 +1,6 @@
 import streamlit as st
 import requests
+import time
 from helpers.api_requests import backend_url
 
 
@@ -51,6 +52,7 @@ def register_page():
             )
             if response.status_code == 200:
                 st.success("Registration successful")
+                time.sleep(1)
                 st.session_state["page"] = "Login"
                 st.rerun()
             else:

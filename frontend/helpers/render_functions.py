@@ -1,5 +1,6 @@
 import streamlit as st
 import datetime
+import time
 from .api_requests import delete_user, delete_appointment
 
 
@@ -16,7 +17,8 @@ def render_user(user, current_page_key):
     ):
         respone = delete_user(st.session_state["token"], user["phone"])
         if respone.status_code == 200:
-            st.success(f"User with phone {user['phone']} deleted successfully")
+            st.toast(f"User with phone {user['phone']} deleted successfully",  icon="✅")
+            time.sleep(1)
             st.session_state["expander_users_open"] = True
             st.rerun()
         else:
@@ -66,7 +68,8 @@ def render_appointment(appointment, current_page_key, state_key=None):
         ):
             response = delete_appointment(st.session_state["token"], appointment["id"])
             if response.status_code == 200:
-                st.success("Appointment deleted successfully")
+                st.toast("Appointment deleted successfully",  icon="✅")
+                time.sleep(1)
                 st.rerun()
             else:
                 st.error(
