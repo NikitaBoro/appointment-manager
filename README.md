@@ -45,6 +45,18 @@ Build the Docker containers:
 docker-compose up --build
 ```
 
+## How to Use
+
+#### Access the frontend at [http://localhost:8501/](http://localhost:8501/)
+- Register as a user and log in to start booking appointments.
+  
+- To log in as an admin and manage users and appointments, use the following credentials: <br />
+  Phone: `admin` <br />
+  Password: `admin`
+
+#### Access the backend API documentation at [http://localhost:8000/docs](http://localhost:8000/docs)
+
+
 ## Testing 
 To run the tests:
 
@@ -61,16 +73,6 @@ export DATABASE_NAME='appointment_manager_test'
 pytest ./backend/tests/unit_test.py
 pytest ./backend/tests/integration_test.py
 ```
-## How to Use
-
-#### Access the frontend at [http://localhost:8501/](http://localhost:8501/)
-- Register as a user and log in to start booking appointments.
-  
-- To log in as an admin and manage users and appointments, use the following credentials: <br />
-  Phone: `admin` <br />
-  Password: `admin`
-
-#### Access the backend API documentation at [http://localhost:8000/docs](http://localhost:8000/docs)
 
 
 
