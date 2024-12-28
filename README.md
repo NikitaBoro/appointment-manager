@@ -74,6 +74,14 @@ pytest ./backend/tests/unit_test.py
 pytest ./backend/tests/integration_test.py
 ```
 
+## Video Demo
+
+#### https://www.youtube.com/watch?v=Rz4gto2uwWw
+
+
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/Rz4gto2uwWw/0.jpg)](https://www.youtube.com/watch?v=Rz4gto2uwWw)
+
+
 ## Illustration
 
 ![image](https://github.com/user-attachments/assets/4e35f1ae-183e-4c23-8a1a-11f8f62bb19e)
